@@ -1,0 +1,45 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tsbuildinfo
+
+# Build / output
+dist/
+build/
+out/
+coverage/
+
+# Environment / secrets
+.env
+.env.*.local
+secrets.json
+*.key
+*.pem
+
+# Logs / runtime files
+logs/
+*.log
+pids/
+*.pid
+*.pid.lock
+*.sock
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+
+# Editors / IDEs
+.vscode/
+
+# Docker
+docker-compose.override.yml
+
+
+# Misc
+coverage/
+*.log.*.dockerignore
