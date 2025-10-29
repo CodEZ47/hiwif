@@ -1,0 +1,115 @@
+datasource db{
+    provider = "postgresql"
+    url = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+//---------------enums-------------
+enum UserRole {
+  user
+  admin
+}
+
+
+
+model User {
+    id        String   @id @default(uuid())
+    firstName   String
+    lastName    String
+    userName    String  @unique
+    email       String  @unique
+    role          UserRole  @default(user)
+
+    passwordHash    String
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt  
+
+    refreshTokens RefreshToken[]
+    comments    Comment[]
+    posts       Post[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  jti       String   @unique 
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  ip        String?
+  userAgent String?
+  valid     Boolean  @default(true)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, valid])
+  @@index([jti])
+}
+
+model Post {
+    id      String     @id @default(uuid())
+    title   String
+    contextDescription String
+    intendedGoal    String @db.Text
+    whatHappened   String @db.Text
+    whyItFailed   String? @db.Text
+    lessonLearned String? @db.Text
+    adviceToOthers    String? @db.Text
+    isAnonymous     Boolean @default(false)
+
+    likes   Int @default(0)
+    views Int @default(0)
+    shares Int @default(0)
+    reflectionScore Int @default(0)
+
+
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt 
+
+    categoryId  String
+    category    Category @relation(fields: [categoryId], references: [id])
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    tags Tag[] @relation("PostTags")
+    comments Comment[]
+
+    @@index([userId, categoryId])
+}
+
+model Category {
+  id        String  @id @default(uuid())
+  name      String  @unique
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model Tag {
+  id    String  @id @default(uuid())
+  name  String  @unique
+  posts Post[]  @relation("PostTags")
+}
+
+model Comment {
+    id    String  @id @default(uuid())
+    body  String
+    upvotes   Int       @default(0)
+    downvotes Int       @default(0)
+    createdAt DateTime  @default(now())
+
+    postId String
+    post   Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    userId String
+    user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    parentId  String?
+    parent    Comment?   @relation("CommentThread", fields: [parentId], references: [id], onDelete: Cascade)
+    replies   Comment[]  @relation("CommentThread")
+
+    @@index([postId])
+    @@index([userId])
+    @@index([parentId])
+
+}

@@ -8,7 +8,6 @@ import prisma from "./config/db.js";
 dotenv.config({quiet: true});
 
 const app = express();
-const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -22,6 +21,4 @@ app.get("/health", (req, res) => {
   res.status(200).json({ satus: "ok", uptime: process.uptime() });
 });
 
-app.listen(PORT, () => {
-  console.log("Server is running.");
-});
+export default app

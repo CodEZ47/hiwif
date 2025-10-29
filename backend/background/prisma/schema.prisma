@@ -1,0 +1,37 @@
+datasource db{
+    provider = "postgresql"
+    url = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+model User {
+  id          String          @id @default(uuid())
+  email       String          @unique
+  userName    String          @unique
+  role        UserRole        @default(user)
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id          String     @id @default(uuid())
+  jti         String     @unique
+  createdAt   DateTime   @default(now())
+  expiresAt   DateTime
+  ip          String?
+  userAgent   String?
+  valid       Boolean    @default(true)
+
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, valid])
+  @@index([jti])
+}

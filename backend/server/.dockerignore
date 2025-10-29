@@ -1,0 +1,17 @@
+.env
+
+node_modules
+npm-debug.log
+yarn.lock
+package-lock.json
+
+.git
+.gitignore
+
+Dockerfile
+docker-compose.yml
+
+__tests__/
+tests/
+docs/
+README.md
