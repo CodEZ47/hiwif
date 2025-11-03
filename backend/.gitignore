@@ -39,8 +39,9 @@ Icon?
 # Docker
 docker-compose.yml
 Dockerfile
-
+.dockerignore
 
 # Misc
 coverage/
-*.log.*.dockerignore
+
+.gitignore
